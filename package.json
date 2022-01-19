@@ -18,8 +18,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "prepare": "husky install"
   },
+  "homepage": "http://gluschenkotoma.github.io/goit-react-hw-03-image-finder",
   "eslintConfig": {
     "extends": [
       "react-app",
