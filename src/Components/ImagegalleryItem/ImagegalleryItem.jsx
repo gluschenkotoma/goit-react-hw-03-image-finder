@@ -1,7 +1,7 @@
-export const ImageGalleryItem = () => {
+export const ImageGalleryItem = ({ imageUrl, id, onClick }) => {
   return (
     <li>
-      <img src="" alt="" />
+      <img src={imageUrl} alt="" onClick={onClick} />
     </li>
   );
 };
