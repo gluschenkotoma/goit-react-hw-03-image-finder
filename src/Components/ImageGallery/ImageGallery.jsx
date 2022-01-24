@@ -1,23 +1,26 @@
-import { Component } from 'react';
-import { ImageGalleryItem } from '../ImagegalleryItem/ImagegalleryItem';
+import PropTypes from 'prop-types';
 
-export class ImageGallery extends Component {
-  handleClick = largeImageURL => {
-    this.props.onClose(largeImageURL);
-  };
-  render() {
-    const { items } = this.props;
-    return (
-      <ul>
-        {items.map(({ id, webformatURL, largeImageURL }) => (
+import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
+
+export const ImageGallery = ({ images, onImageClick }) => {
+  return (
+    <ul>
+      {images.map(({ id, webformatURL, largeImageURL, tags }) => {
+        return (
           <ImageGalleryItem
             key={id}
-            id={id}
-            imageUrl={webformatURL}
-            onClick={() => this.handleClick(largeImageURL)}
+            image={webformatURL}
+            largeImageURL={largeImageURL}
+            onClickImage={onImageClick}
+            tags={tags}
           />
-        ))}
-      </ul>
-    );
-  }
-}
+        );
+      })}
+    </ul>
+  );
+};
+
+ImageGallery.propTypes = {
+  id: PropTypes.string,
+  images: PropTypes.arrayOf(PropTypes.object).isRequired,
+};

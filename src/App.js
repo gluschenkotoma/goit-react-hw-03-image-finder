@@ -9,36 +9,90 @@ import { getPictures } from 'services/pickturesApi';
 
 export class App extends Component {
   state = {
-    items: [],
-    query: '',
-    page: 1,
+    images: [],
+    pageNumber: 1,
+    searchQuery: '',
     isLoading: false,
-    error: false,
+    showModal: false,
+    largeImage: '',
+    error: null,
+    total: 0,
   };
 
-  fetchPictures = () => {
-    const { query, page } = this.state;
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchQuery !== this.state.searchQuery) {
+      this.fetchImages();
+    }
+  }
 
-    getPictures(query, page)
-      .then(items =>
+  onChangeQuery = query => {
+    this.setState({
+      images: [],
+      pageNumber: 1,
+      searchQuery: query.trim(),
+      error: null,
+    });
+  };
+
+  fetchImages = () => {
+    const { searchQuery, pageNumber } = this.state;
+    const arg = { searchQuery, pageNumber };
+    if (!searchQuery) return;
+
+    this.setState({ isLoading: true });
+
+    getPictures(arg)
+      .then(({ hits }) => {
         this.setState(prevState => ({
-          items: [...prevState.items, ...items],
-          page: prevState.page + 1,
-        }))
-      )
-      .catch(error => this.setState({ error: true }))
-      .finally(() => this.setState({ isLoading: false }));
+          images: [...prevState.images, ...hits],
+          pageNumber: prevState.pageNumber + 1,
+          total: hits.length,
+        }));
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
+      })
+      .catch(error => this.setState({ error }))
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
+  };
+
+  toggleModal = () => {
+    this.setState({ largeImage: '', showModal: false });
+  };
+
+  openModal = largeImageURL => {
+    this.setState({ largeImage: largeImageURL, showModal: true });
   };
   render() {
-    const { items } = this.state;
+    const { images, isLoading, showModal, largeImage, error, total } =
+      this.state;
+
+    const showLoadMoreButton = images.length !== 0 && !isLoading && total > 0;
+
+    console.log(showLoadMoreButton);
     return (
       <>
         <GlobalStyle />
-        <SearchBar onSubmit={this.fetchPictures}></SearchBar>
-        <ImageGallery items={items} />
-        <Modal />
-        <Button onClick={this.fetchPictures} />
-        <Loader />
+        <div>
+          <SearchBar onSubmit={this.onChangeQuery} />
+
+          {error && <p>Произошла ошибка ...</p>}
+
+          <ImageGallery images={images} onImageClick={this.openModal} />
+
+          {showLoadMoreButton && <Button onClick={this.fetchImages} />}
+
+          {isLoading && <Loader />}
+
+          {showModal && (
+            <Modal onClose={this.toggleModal}>
+              <img src={largeImage} alt="" />
+            </Modal>
+          )}
+        </div>
       </>
     );
   }
