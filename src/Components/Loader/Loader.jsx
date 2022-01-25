@@ -1,5 +1,3 @@
-import { Component } from 'react';
-
 import ClipLoader from 'react-spinners/ClipLoader';
 import { css } from '@emotion/react';
 
@@ -10,12 +8,6 @@ const override = css`
 
   border-color: #6556bd;
 `;
-export class Loader extends Component {
-  render() {
-    return (
-      <>
-        <ClipLoader css={override} />
-      </>
-    );
-  }
-}
+export const Loader = () => {
+  return <ClipLoader css={override} />;
+};
