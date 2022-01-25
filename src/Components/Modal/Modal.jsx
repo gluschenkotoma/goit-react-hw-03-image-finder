@@ -1,4 +1,4 @@
-import { Component } from 'react/cjs/react.development';
+import { Component } from 'react';
 import { createPortal } from 'react-dom';
 import { StyledOverlay, StyledModal } from './Modal.styled';
 const modalRoot = document.querySelector('#modal-root');
