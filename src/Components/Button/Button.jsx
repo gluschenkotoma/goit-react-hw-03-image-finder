@@ -1,6 +1,6 @@
-export const Button = () => {
+export const Button = ({ onClick }) => {
   return (
-    <button type="button" onClick={this.props.onClick}>
+    <button type="button" onClick={onClick}>
       Load More
     </button>
   );
